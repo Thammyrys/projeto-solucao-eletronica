@@ -1,0 +1,233 @@
+﻿@page "/cadastro"
+@using SMA.Contracts
+@using SMA.Data
+@inject IAparelhoRepository repo;
+@inject NavigationManager NavManager
+
+<style>
+    .btn {
+        border-radius: 0 !important;
+        margin: 32px 0 0 0;
+        border: none !important;
+        background-color: #00685d;
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+        position: absolute;
+        right: 0;
+        margin-right: 30px;
+    }
+
+        .btn:hover {
+            background-color: #01332e;
+        }
+
+    .title {
+        margin: 16px 0 16px 0;
+        border: none;
+        border-radius: 25px;
+        width: 280px;
+        padding: 2px 16px 2px 16px;
+        background-color: #00685d;
+        color: whitesmoke;
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    }
+
+    .inside {
+        color: #fff;
+    }
+</style>
+
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Cadastro Cliente</button>
+        <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Cadastro Funcionário</button>
+        <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Cadastro Aparelho</button>
+    </div>
+</nav>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Novo cliente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Nome/Razão Social" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Email" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="CPF" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Celular" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Endereço" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Número" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Bairro" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="CEP" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+
+            </div>
+            <div class="modal-footer" style="height: 100px;">
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Cadastrar novo Cliente</button>
+        <div class="container-fluid p-2">
+            <table class="table table-hover" style="margin-top: 80px;">
+                <thead>
+                    <tr>
+                        <th scope="col">Nome/Razao</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">CPF/CNPJ</th>
+                        <th scope="col">Celular</th>
+                        <th scope="col">Endereço</th>
+                        <th scope="col">Número</th>
+                        <th scope="col">Bairro</th>
+                        <th scope="col">CEP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Uilson</td>
+                        <td>Uil@bol.com.br</td>
+                        <td>028.032.012-43</td>
+                        <td>(61)99293-4242</td>
+                        <td>QNS 2</td>
+                        <td>10</td>
+                        <td>Ceilandia</td>
+                        <td>7170854</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+
+
+        <div class="accordion mt-3" id="accordionExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                       josé da silva
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <strong>Funcionário do mês.</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        Fernando Mota
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        Thammyrys
+                    </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+        <button class="btn btn-outline-danger inside" style="border-radius: 50px!important; position: absolute; right: 0; bottom: 0; margin-bottom: 100px;">
+            <b>+</b>
+        </button>
+    </div>
+    <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+        <div class="container-fluid p-2">
+
+            <div class="title">Novo aparelho para manutenção</div>
+
+            <form class="row g-3 mt-3">
+                <div class="col-md-6">
+                    <input type="text" class="form-control" id="inputEmail4" placeholder="Aparelho" @bind="aparelho.Nome">
+                </div>
+                <div class="col-md-6">
+                    <input type="text" class="form-control" id="inputPassword4" placeholder="Marca" @bind="aparelho.Marca">
+                </div>
+                <div class="col-md-6">
+                    <input type="text" class="form-control" id="inputAddress" placeholder="Modelo" @bind="aparelho.Modelo">
+                </div>
+                <div class="col-md-6">
+                    <input type="text" class="form-control" id="inputAddress" placeholder="Número de série" @bind="aparelho.NumeroDeSerie">
+                </div>
+                <div class="col-12">
+                    <input type="text" class="form-control" id="inputAddress" placeholder="Descrição do Defeito" @bind="aparelho.DescricaoDoDefeito">
+                </div>
+                <div class="col-12">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="gridCheck" @bind="aparelho.EstaNaGarantia">
+                        <label class="form-check-label" for="gridCheck">
+                            Está na garantia?
+                        </label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary" @onclick="create">Cadastrar Aparelho</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+</div>
+@code {
+    Aparelho aparelho = new Aparelho();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+    private void create()
+    {
+        aparelho.DataDeEntrada = DateTime.Today;
+        aparelho.Status = StatusEnum.AguardandoAnalise;
+
+        repo.Create(aparelho);
+
+        NavManager.NavigateTo("aparelhos");
+    }
+}

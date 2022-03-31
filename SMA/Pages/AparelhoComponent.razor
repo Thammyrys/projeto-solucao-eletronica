@@ -1,0 +1,318 @@
+﻿@page "/aparelhos"
+@using SMA.Contracts
+@using SMA.Data
+@inject IAparelhoRepository repo;
+
+<style>
+    .accordion-button {
+        border: none;
+        box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+    }
+
+    .title {
+        margin: 16px 0 16px 0;
+        border: none;
+        border-radius: 25px;
+        width: 250px;
+        padding: 2px 16px 2px 16px;
+        background-color: #00685d;
+        color: whitesmoke;
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    }
+</style>
+
+
+<ul class="nav nav-tabs mb-3" id="pills-tab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Aguardando análise</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Em análise</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Aguardando Conserto</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="pills-Conserto-tab" data-bs-toggle="pill" data-bs-target="#pills-Conserto" type="button" role="tab" aria-controls="pills-Consert" aria-selected="false">Em Conserto</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="pills-Pronto-tab" data-bs-toggle="pill" data-bs-target="#pills-Pronto" type="button" role="tab" aria-controls="pills-Pront" aria-selected="false">Prontos para Entrega</button>
+    </li>
+</ul>
+<div class="tab-content" id="pills-tabContent">
+
+
+
+
+    <div class="tab-pane fade show active mt-3" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+        <div class="title">Aparelhos aguardando análise</div>
+
+        @foreach (var aparelho in aparelhos)
+        {
+            @if (aparelho.Status == StatusEnum.AguardandoAnalise)
+            {
+                <div class="accordion accordion-flush m-3" id="accordionFlushExample">
+                    <div class="accordion-item">
+                        <div>Codigo: @aparelho.Id</div>
+                        <h2 class="accordion-header" id="@aparelho.Id">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                @aparelho.Nome
+                            </button>
+                        </h2>
+                        <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">
+
+                                @aparelho.DescricaoDoDefeito
+
+                                <button class="btn btn-outline-danger" style="border-radius: 0; position: absolute; right: 0; margin-right: 180px;" @onclick="() => RemoverAparelho(aparelho.Id)">
+                                    Excluir Aparelho
+                                </button>
+
+                                <button @onclick="() => AlterarAparelho(aparelho.Id)" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="border-radius: 0; position: absolute; right: 0; margin-right: 40px;">
+                                    Alterar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form class="row g-3 mt-3">
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" id="inputEmail4" placeholder="Aparelho" @bind="aparelho.Nome">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" id="inputPassword4" placeholder="Marca" @bind="aparelho.Marca">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" id="inputAddress" placeholder="Modelo" @bind="aparelho.Modelo">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" id="inputAddress" placeholder="Número de série" @bind="aparelho.NumeroDeSerie">
+                                    </div>
+                                    <div class="col-12">
+                                        <input type="text" class="form-control" id="inputAddress" placeholder="Descrição do Defeito" @bind="aparelho.DescricaoDoDefeito">
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="gridCheck" @bind="aparelho.EstaNaGarantia">
+                                            <label class="form-check-label" for="gridCheck">
+                                                Está na garantia?
+                                            </label>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" @onclick="() => salvar(aparelho)" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+        <div class="tab-pane fade show active mt-3" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+            <div class="title">Aparelhos em análise</div>
+
+            @foreach (var aparelho in aparelhos)
+            {
+                @if (aparelho.Status == StatusEnum.EmAnalise)
+                {
+                    <div class="accordion accordion-flush m-3" id="accordionFlushExample">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="@aparelho.Id">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                    @aparelho.Nome
+                                </button>
+                            </h2>
+                            <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">
+
+                                    @aparelho.DescricaoDoDefeito
+
+                                    <button class="btn btn-outline-danger" style="border-radius: 0; position: absolute; right: 0; margin-right: 180px;" @onclick="() => RemoverAparelho(aparelho.Id)">
+                                        Excluir Aparelho
+                                    </button>
+
+                                    <button class="btn btn-outline-primary" style="border-radius: 0; position: absolute; right: 0; margin-right: 40px;">
+                                        Alterar status
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+        <div class="tab-pane fade show active mt-3" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+            <div class="title" style="width: 300px;">Aparelhos aguardando conserto</div>
+
+            @foreach (var aparelho in aparelhos)
+            {
+                @if (aparelho.Status == StatusEnum.AguardandoConserto)
+                {
+                    <div class="accordion accordion-flush m-3" id="accordionFlushExample">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="@aparelho.Id">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                    @aparelho.Nome
+                                </button>
+                            </h2>
+                            <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">
+
+                                    @aparelho.DescricaoDoDefeito
+
+                                    <button class="btn btn-outline-danger" style="border-radius: 0; position: absolute; right: 0; margin-right: 180px;" @onclick="() => RemoverAparelho(aparelho.Id)">
+                                        Excluir Aparelho
+                                    </button>
+
+                                    <button class="btn btn-outline-primary" style="border-radius: 0; position: absolute; right: 0; margin-right: 40px;">
+                                        Alterar status
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div>Nenhum aparelho no momento</div>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="pills-Conserto" role="tabpanel" aria-labelledby="pills-conserto-tab">
+        <div class="tab-pane fade show active mt-3" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+            <div class="title" style="width: 200px;">Em conserto</div>
+
+            @foreach (var aparelho in aparelhos)
+            {
+                @if (aparelho.Status == StatusEnum.EmConserto)
+                {
+                    <div class="accordion accordion-flush m-3" id="accordionFlushExample">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="@aparelho.Id">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                    @aparelho.Nome
+                                </button>
+                            </h2>
+                            <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">
+
+                                    @aparelho.DescricaoDoDefeito
+
+                                    <button class="btn btn-outline-danger" style="border-radius: 0; position: absolute; right: 0; margin-right: 180px;" @onclick="() => RemoverAparelho(aparelho.Id)">
+                                        Excluir Aparelho
+                                    </button>
+
+                                    <button class="btn btn-outline-primary" style="border-radius: 0; position: absolute; right: 0; margin-right: 40px;">
+                                        Alterar status
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div>Nenhum aparelho em conserto no momento</div>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="pills-Pronto" role="tabpanel" aria-labelledby="pills-contact-tab">
+        <div class="tab-pane fade show active mt-3" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+            <div class="title" style="width: 200px;">Aparelhos prontos</div>
+
+            @foreach (var aparelho in aparelhos)
+            {
+                @if (aparelho.Status == StatusEnum.Finalizado)
+                {
+                    <div class="accordion accordion-flush m-3" id="accordionFlushExample">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="@aparelho.Id">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                    @aparelho.Nome
+                                </button>
+                            </h2>
+                            <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">
+
+                                    @aparelho.DescricaoDoDefeito
+
+                                    <button class="btn btn-outline-danger" style="border-radius: 0; position: absolute; right: 0; margin-right: 180px;" @onclick="() => RemoverAparelho(aparelho.Id)">
+                                        Excluir Aparelho
+                                    </button>
+
+                                    <button class="btn btn-outline-primary" style="border-radius: 0; position: absolute; right: 0; margin-right: 40px;">
+                                        Alterar status
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div>Nenhum aparelho pronto</div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+
+
+
+@code {
+    public Aparelho aparelho = new Aparelho();
+
+    public IEnumerable<Aparelho> aparelhos;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        TodosAparelhos();
+    }
+
+    public void TodosAparelhos()
+    {
+        aparelhos = repo.PegarTodos();
+    }
+
+    public void RemoverAparelho(int id)
+    {
+        repo.DeleteById(id);
+        TodosAparelhos();
+    }
+
+    public void AlterarAparelho(int id)
+    {
+        aparelho = repo.GetById(id);
+
+        repo.UpdateAparelho(aparelho);
+    }
+
+    public void salvar(Aparelho aparelho)
+    {
+
+        aparelho = repo.Create(aparelho);
+    }
+}
